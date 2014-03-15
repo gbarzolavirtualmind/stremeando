@@ -1,64 +1,61 @@
-var needle = require('needle');
-var cheerio = require('cheerio');
+var express = require('express');
+var http = require('http');
+var path = require('path');
+var favicon = require('static-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
+var routes = require('./routes');
+var users = require('./routes/user');
+var videos = require('./routes/video');
 
-// needle.get('http://uptobox.com/l7tssjwnfg5p', function(error, response) {
-//   console.log('Got status code: ' + response.statusCode);
-//   //console.log(response.body);
+var app = express();
 
-//   var $ = cheerio.load(response.body);
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
-//   //console.log($("input[type='hidden']"));
+app.use(favicon());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(app.router);
 
-  // $("input[type='hidden']").each(function( index, value ) {
-  	
-  // 	console.log( $(value).val()  );
+app.get('/', routes.index);
+app.get('/users', users.list);
+app.get('/videos/:id',videos.index);
 
-  // });
+/// catch 404 and forwarding to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
 
-// });
+/// error handlers
 
-var options = {
-  headers    : {
-    'Content-Type': "application/x-www-form-urlencoded"
-  }
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
 }
 
-needle.post("http://uptobox.com/l7tssjwnfg5p", "fname=106.mp4&op=download1&id=l7tssjwnfg5p&method_free=Free+Download&referer=&usr_login=", options, function(error, response){
-	console.log('Got status code: ' + response.statusCode);
-	var $ = cheerio.load(response.body);
-	// console.log($("head").html());
-
-	console.log($("meta[name='keywords']").attr("content"));
-	console.log($("meta[name='description']").attr("content") );
-
-	$("input[type='hidden']").each(function( index, value ) {
-  		console.log( $(value).val() + "///" + $(value).attr("name") );
-  	});
-
-	var rand = $("input[name='rand']").val();
-	console.log(rand);
-
-
-	console.log('Welcome to My Console,');
-	setTimeout(function() {
-	    console.log('Blah blah blah blah extra-blah');
-
-		needle.post("http://uptobox.com/l7tssjwnfg5p", "fname=106.mp4&op=download2&id=l7tssjwnfg5p&rand="+rand+"&referer=&method_free=Free+Download&method_premium=", options, function(error, response){
-			console.log('Got status code: ' + response.statusCode);
-			var $ = cheerio.load(response.body);
-			// console.log($("head").html());
-
-			// console.log($("body").html());
-			console.log($("meta[name='keywords']").attr("content"));
-			console.log($("meta[name='description']").attr("content") );
-			console.log($(".button_upload a").attr("href"));
-
-		});
-
-	}, 60000);
-
-
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
 });
 
 
+module.exports = app;
