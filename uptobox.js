@@ -13,17 +13,17 @@ var form = {
 var url = "http://uptobox.com/vo5oqoa0kdjc";
 
 
-	// request.post('http://uptobox.com',{form:form, proxy:"http://127.0.0.1:8888"}, function (error, response, body) {
-	// var headers = response.headers;
-	// console.log(headers["set-cookie"][1]);
-	// console.log(headers["set-cookie"][2]);
+request.post('http://uptobox.com',{form:form, proxy:"http://127.0.0.1:8888"}, function (error, response, body) {
+	var headers = response.headers;
+	console.log(headers["set-cookie"][1]);
+	console.log(headers["set-cookie"][2]);
 
 	var j = request.jar();
-	var cookie1 =  request.cookie("login=Reco-X")
-	var cookie2 = request.cookie("xfss=pw1qyqdaxqwpyaj4")
+	//var cookie1 =  request.cookie("login=Reco-X")
+	//var cookie2 = request.cookie("xfss=pw1qyqdaxqwpyaj4")
 	
-	//var cookie1 = request.cookie(headers["set-cookie"][1])
-	//var cookie2 = request.cookie(headers["set-cookie"][2])
+	var cookie1 = request.cookie(headers["set-cookie"][1]);
+	var cookie2 = request.cookie(headers["set-cookie"][2]);
 
 	j.setCookie(cookie1, "http://uptobox.com");
 	j.setCookie(cookie2, "http://uptobox.com");
@@ -50,6 +50,4 @@ var url = "http://uptobox.com/vo5oqoa0kdjc";
 			console.log($(".button_upload a").attr("href"));
 		});
 	});
-
-
-// });
+});

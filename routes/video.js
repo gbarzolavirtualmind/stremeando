@@ -14,14 +14,13 @@ exports.index = function(req, res){
 	var url = "http://uptobox.com/"+req.params.id;
 	var j = request.jar();
 	var cookie1 =  request.cookie("login=Reco-X")
-	var cookie2 = request.cookie("xfss=pw1qyqdaxqwpyaj4")
+	var cookie2 = request.cookie("xfss=65b6ozipt2og60x4")
 	j.setCookie(cookie1, "http://uptobox.com");
 	j.setCookie(cookie2, "http://uptobox.com");
 
 	request({uri:url, jar:j},function(error,response,body){
 		var $ = cheerio.load(body);
-		var hiddens = $("input[type='hidden']");
-		
+		var hiddens = $("input[type='hidden']");	
 		var getHiddenValue = function(hiddens,name){
 			result = _.find(hiddens,function(item){return item.attribs.name==name});
 			return result.attribs.value;
